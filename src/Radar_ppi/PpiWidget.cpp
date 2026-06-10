@@ -125,7 +125,24 @@ void PpiWidget::addTargets(const QVector<asterixqt::Cat048Target>& targets)
     QMutexLocker locker(&mutex_);
 
     for (const auto& target : targets) {
-        targets_.push_back(target);
+        if (target.hasTrackNumber) {
+            bool updated = false;
+
+            for (auto& existingTarget : targets_) {
+                if (existingTarget.hasTrackNumber && existingTarget.trackNumber == target.trackNumber) {
+                    existingTarget = target;
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (!updated) {
+                targets_.push_back(target);
+            }
+        } else {
+            targets_.push_back(target);
+        }
+
         if (target.hasPolar) {
             sweepAzimuthDeg_ = target.azimuthDeg;
         }
@@ -133,6 +150,16 @@ void PpiWidget::addTargets(const QVector<asterixqt::Cat048Target>& targets)
 
     if (targets_.size() > 4096) {
         targets_.erase(targets_.begin(), targets_.begin() + (targets_.size() - 4096));
+    }
+
+    if (selectedIsTrack_) {
+        selectedTargetIndex_ = -1;
+        for (int i = 0; i < targets_.size(); ++i) {
+            if (targets_[i].hasTrackNumber && targets_[i].trackNumber == selectedTrackNumber_) {
+                selectedTargetIndex_ = i;
+                break;
+            }
+        }
     }
 }
 
@@ -252,7 +279,24 @@ void PpiWidget::paintGL()
 
     for (const auto& target : targets) {
         if (target.hasPolar && target.rangeNm <= rangeNm_) {
-            appendPoint(points, polar(target.azimuthDeg, target.rangeNm), QColor(0, 255, 0));
+            const QPointF targetPoint = polar(target.azimuthDeg, target.rangeNm);
+
+            if (target.hasTrackNumber) {
+                const double size = 7.0;
+                const QColor trackColor(255, 0, 0);
+
+                const QPointF top(targetPoint.x(), targetPoint.y() - size);
+                const QPointF right(targetPoint.x() + size, targetPoint.y());
+                const QPointF bottom(targetPoint.x(), targetPoint.y() + size);
+                const QPointF left(targetPoint.x() - size, targetPoint.y());
+
+                appendLine(lines, top, right, trackColor);
+                appendLine(lines, right, bottom, trackColor);
+                appendLine(lines, bottom, left, trackColor);
+                appendLine(lines, left, top, trackColor);
+            } else {
+                appendPoint(points, targetPoint, QColor(0, 255, 0));
+            }
         }
     }
 
@@ -295,6 +339,24 @@ void PpiWidget::mousePressEvent(QMouseEvent* event)
     lastMousePosition_ = event->pos();
     mousePosition_ = mouseToPpi(lastMousePosition_);
     selectedTargetIndex_ = findNearestTarget(lastMousePosition_);
+
+    QVector<asterixqt::Cat048Target> targets;
+    {
+        QMutexLocker locker(&mutex_);
+        targets = targets_;
+    }
+
+    selectedIsTrack_ = false;
+    selectedTrackNumber_ = 0;
+
+    if (selectedTargetIndex_ >= 0 && selectedTargetIndex_ < targets.size()) {
+        const auto& selected = targets[selectedTargetIndex_];
+        if (selected.hasTrackNumber) {
+            selectedIsTrack_ = true;
+            selectedTrackNumber_ = selected.trackNumber;
+        }
+    }
+
     update();
 }
 
@@ -375,6 +437,23 @@ int PpiWidget::findNearestTarget(const QPoint& mousePosition, double maxDistance
     }
 
     return bestIndex;
+}
+
+int PpiWidget::findTargetByTrackNumber(quint16 trackNumber) const
+{
+    QVector<asterixqt::Cat048Target> targets;
+    {
+        QMutexLocker locker(&mutex_);
+        targets = targets_;
+    }
+
+    for (int i = 0; i < targets.size(); ++i) {
+        if (targets[i].hasTrackNumber && targets[i].trackNumber == trackNumber) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 double PpiWidget::dynamicRingStepNm() const
@@ -720,8 +799,18 @@ void PpiWidget::drawOverlay()
         targets = targets_;
     }
 
-    if (selectedTargetIndex_ >= 0 && selectedTargetIndex_ < targets.size()) {
-        const auto& target = targets[selectedTargetIndex_];
+    int overlaySelectionIndex = selectedTargetIndex_;
+    if (selectedIsTrack_) {
+        for (int i = 0; i < targets.size(); ++i) {
+            if (targets[i].hasTrackNumber && targets[i].trackNumber == selectedTrackNumber_) {
+                overlaySelectionIndex = i;
+                break;
+            }
+        }
+    }
+
+    if (overlaySelectionIndex >= 0 && overlaySelectionIndex < targets.size()) {
+        const auto& target = targets[overlaySelectionIndex];
         const double rangeMeters = target.rangeNm * MetersPerNm;
 
         painter.setPen(QColor(255, 255, 0));

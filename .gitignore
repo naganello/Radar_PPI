@@ -1,0 +1,63 @@
+# Build
+build/
+cmake-build-*/
+out/
+
+# Qt
+moc_*.cpp
+moc_*.h
+qrc_*.cpp
+ui_*.h
+*.moc
+mocs_compilation*.cpp
+*.pro.user
+*.pro.user.*
+*.qmake.stash
+
+# Visual Studio / MSVC
+*.sln
+*.vcxproj*
+*.vcxproj.user
+*.vcxproj.filters
+*.suo
+*.sdf
+*.opensdf
+*.user
+*.db
+*.db-wal
+*.db-shm
+Debug/
+Release/
+x64/
+x86/
+*.obj
+*.o
+*.exe
+*.pdb
+*.ilk
+*.lib
+*.dll
+*.exp
+*.tlog
+*.ipdb
+*.iobj
+*.log
+*.lastbuildstate
+*.unsuccessfulbuild
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Python virtual env
+venv/
+.venv/
+
+# Patch files
+*.patch

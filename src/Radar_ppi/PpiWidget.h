@@ -75,6 +75,7 @@ private:
     QPointF polar(double azimuthDeg, double rangeNm) const;
     MousePpiPosition mouseToPpi(const QPoint& mousePosition) const;
     int findNearestTarget(const QPoint& mousePosition, double maxDistancePixels = 12.0) const;
+    int findTargetByTrackNumber(quint16 trackNumber) const;
     double dynamicRingStepNm() const;
 
     void createPrograms();
@@ -131,4 +132,6 @@ private:
     QPoint lastMousePosition_;
     MousePpiPosition mousePosition_;
     int selectedTargetIndex_ = -1;
+    bool selectedIsTrack_ = false;
+    quint16 selectedTrackNumber_ = 0;
 };
