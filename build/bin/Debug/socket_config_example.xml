@@ -1,4 +1,0 @@
-<RadarSocketConfig>
-    <CAT048 group="239.1.1.48" port="30048" local="0.0.0.0"/>
-    <CAT240 group="239.0.0.1" port="4433" local="0.0.0.0"/>
-</RadarSocketConfig>

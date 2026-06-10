@@ -1,4 +1,0 @@
-C:/Sviluppo/ws/Radar_ppi-0.4.5/build/CMakeFiles/AsterixQt.dir
-C:/Sviluppo/ws/Radar_ppi-0.4.5/build/CMakeFiles/Radar_ppi.dir
-C:/Sviluppo/ws/Radar_ppi-0.4.5/build/CMakeFiles/ALL_BUILD.dir
-C:/Sviluppo/ws/Radar_ppi-0.4.5/build/CMakeFiles/ZERO_CHECK.dir

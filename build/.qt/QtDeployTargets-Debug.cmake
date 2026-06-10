@@ -1,5 +1,0 @@
-set(__QT_DEPLOY_TARGET_AsterixQt_FILE C:/Sviluppo/ws/Radar_ppi-0.4.5/build/lib/Debug/AsterixQt.lib)
-set(__QT_DEPLOY_TARGET_AsterixQt_TYPE STATIC_LIBRARY)
-set(__QT_DEPLOY_TARGET_Radar_ppi_FILE C:/Sviluppo/ws/Radar_ppi-0.4.5/build/bin/Debug/Radar_ppi.exe)
-set(__QT_DEPLOY_TARGET_Radar_ppi_TYPE EXECUTABLE)
-set(__QT_DEPLOY_TARGET_Radar_ppi_RUNTIME_DLLS C:/Qt6/qt6-build/bin/Qt6OpenGLWidgets.dll;C:/Qt6/qt6-build/bin/Qt6Xml.dll;C:/Qt6/qt6-build/bin/Qt6Network.dll;C:/Qt6/qt6-build/bin/Qt6Widgets.dll;C:/Qt6/qt6-build/bin/Qt6OpenGL.dll;C:/Qt6/qt6-build/bin/Qt6Gui.dll;C:/Qt6/qt6-build/bin/Qt6Core.dll)
